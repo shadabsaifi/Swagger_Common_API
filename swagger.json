@@ -1,0 +1,259 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Yet Another Node.js Blogg Application API",
+        "description": "Yet Another Node.js Blogg Application API",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "host": "localhost:3000",
+    "basePath": "/api/v1",
+    "tags": [
+        {
+            "name": "Users",
+            "description": "API for users in the system"
+        },
+        {
+            "name": "Admin",
+            "description": "API for admin in the system"
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/users": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create new user in system",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "required":true,
+                        "description": "User that we want to create",
+                        "schema": {
+                            "$ref": "#/definitions/UserWithOutId"
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "New user is created",
+                        "schema": {
+                            "$ref": "#/definitions/UserWithId"
+                        }
+                    }
+                }
+            },
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get All User in System",
+                "parameters":[
+                    {
+                        "$ref":"#/header"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Users"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{userId}": {
+            "parameters": [
+                {
+                    "$ref":"#/header"
+                },
+                {
+                    "name": "userId",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of user that we want to find",
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get user with given ID",
+                "responses": {
+                    "200": {
+                        "description": "User is found",
+                        "schema": {
+                            "$ref": "#/definitions/UserWithId"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete user with given ID",
+                "tags": [
+                    "Users"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "You have successfully deleted this user."
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update user with give ID",
+                "tags": [
+                    "Users"
+                ],
+                "parameters": [
+                    {
+                        "name": "profilePic",
+                        "in": "formData",
+                        "type":"file",
+                        "required":true,
+                        "description": "User Profile Picture"
+                    },
+                    {
+                        "name": "firstName",
+                        "in": "formData",
+                        "type":"string",
+                        "description": "User First Name"
+                    },
+                    {
+                        "name": "lastName",
+                        "in": "formData",
+                        "type":"string",
+                        "description": "User Last Name"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User is updated",
+                        "schema": {
+                            "$ref": "#/definitions/UserWithId"
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/{userId}": {
+            "parameters": [
+                {
+                    "name": "userId",
+                    "in": "path",
+                    "required": true,
+                    "description": "ID of user that we want to find",
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get admin in system",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Admin"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "UserWithOutId": {
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                }
+            }
+        },
+        "UserWithId": {
+            "properties": {
+                "_id": {
+                    "type":"string",
+                    "uniqueItems": true,
+                    "format":"uuid"
+                },
+                "email": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "token":{
+                    "type":"string",
+                    "format":"uuid"
+                }
+            }
+        },
+        "Users": {
+            "type": "array",
+            "$ref": "#/definitions/UserWithId"
+        },
+        "Admin": {
+            "required": [
+                "email",
+                "_id"
+            ],
+            "properties": {
+                "_id": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "email": {
+                    "type": "string",
+                    "uniqueItems": true
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                }
+            }
+        },
+        "Admins": {
+            "type": "array",
+            "$ref": "#/definitions/Admin"
+        }
+    },
+    "header":{
+        "name":"accessToken",
+        "in":"header",
+        "required":true,
+        "type":"string",
+        "description":"An Authorization"
+    }
+}
